@@ -12,12 +12,6 @@ code {
     monospace;
 }
 
-.summary{
-  text-align: center;
-}
-body{
-  height: 100vh;
-  display: flex;
-  justify-content:  center;
-  align-items:  center;
+.name{
+  font-family: 'Pacifico', cursive;
 }

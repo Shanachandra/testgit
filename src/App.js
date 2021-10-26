@@ -15,7 +15,7 @@ const movies = [
   {
     movieName: "The Imitation Game",
     moviePic:
-      "https://m.media-amazon.com/images/Mnpm/MV5BOTgwMzFiMWYtZDhlNS00ODNkLWJiODAtZDVhNzgyNzJhYjQ4L2ltYWdlXkEyXkFqcGdeQXVyNzEzOTYxNTQ@._V1_.jpg",
+      "https://m.media-amazon.com/images/M/MV5BOTgwMzFiMWYtZDhlNS00ODNkLWJiODAtZDVhNzgyNzJhYjQ4L2ltYWdlXkEyXkFqcGdeQXVyNzEzOTYxNTQ@._V1_.jpg",
     movieSummary:
       "Alan Turing, a British mathematician, joins the cryptography team to decipher the German enigma code. With the help of his fellow mathematicians, he builds a machine to crack the codes.",
     imdb: "8"
@@ -47,44 +47,135 @@ const movies = [
 
 function App() {
   return (
-    <div className="App">      
-      {movies.map((movie) => (
+    
+    <div className="App"> 
+    <AddMovie />
+    
+     <div className="movie-list">
+       
+        {movies.map((mv,index) => (
+          <Movie
+            key={index}          
+            name={mv.movieName}
+            poster={mv.moviePic}
+            rating={mv.imdb}
+            summary={mv.movieSummary}
+          />
+        ))}
+      </div>  
+      {/* {movies.map((movie) => (
         <Msg
           name={movie.movieName}
           img={movie.moviePic}
           summary={movie.movieSummary}
           imdb={movie.imdb}
         />
-      ))}
-
-      {/* <ColorBox /> */}
+      ))} */}
+{/* <ColorList />
+      <ColorBox /> */}
     </div>
   );
 }
-function ColorBox()
+function AddMovie()
 {
-  const [color, colorchange]=useState(0);
-    const styles = { backgroundColor: "orange", color: "teal" };
+  
+  const [name, setName]=useState("");
+  const [url, setUrl]=useState("");
+  const [summary, setSummary]=useState("");
+  const [rating, setRating]=useState("");
+
+  return(
+  <div className="inputimg">
+   
+  <input     
+      placeholder="Movie Name"
+      onChange={(event) =>setName(event.target.value)
+      }
+          />  
+              <input     
+      placeholder="Movie img url"
+      onChange={(event) =>setUrl(event.target.value)
+      }
+          />   
+              <input     
+      placeholder="summary"
+      onChange={(event) =>setSummary(event.target.value)
+      }
+          />  
+              <input     
+      placeholder="Rating"
+      onChange={(event) =>setRating(event.target.value)
+      }
+          />  
+          
+        <button onClick={()=>{          
+          <Movie         
+          name={name}
+          poster={url}
+          rating={rating}
+          summary={summary} />
+        }}>Add Movie</button>
+  </div>
+  )
+  
+}
+function ColorList()
+{
+  const [color, setColor]=useState("orange");
+    const styles = { backgroundColor: color, color: "black" };
+    const inital_colors=["crimson","orange","skyblue","pink"];
+    const [colors,setcolors]=useState(inital_colors);
+    
     return (
+      <div>
       <input
-        onChange={(event) => console.log(event.target.value)
+        onChange={(event) =>setColor(event.target.value)
         }
         placeholder="Enter a color"
+        value={color}
         style={styles}
       />
+      <button onClick={()=>setcolors([...colors,color])}>Add Color</button>
+      {colors.map((clr,index)=>(
+      <ColorBox key={index} color={clr} />
+      ))}
+      </div>
     );
   
   
 }
 
-function Msg({ name, img, summary, imdb }) {
-  return (
-    <div>
-      <img height="300px" width="200px" src={img} alt="google.com"></img>
-      <h1 className="name">{name}</h1>
+function ColorBox({color})
+{
+  const styles={height:"75px", width:"150px",background:color,margin:"10px 0px"};
+  return <div style={styles}></div>
+}
+// function Msg({ name, img, summary, imdb }) {
+//   return (
+//     <div>
+//       <img height="300px" width="200px" src={img} alt="google.com"></img>
+//       <h1 className="name">{name}</h1>
       
-      <p className="summary"><b>Summary: </b>{summary}</p>
-      <p className="Imdb"><b>Imdb:</b>{imdb}</p>
+//       <p className="summary"><b>Summary: </b>{summary}</p>
+//       <p className="Imdb"><b>Imdb:</b>{imdb}</p>
+//       <button>Show Description</button>
+//     </div>
+//   );
+// }
+function Movie({name, poster, rating, summary }) {  
+  const [show,setShow]=useState(false )
+  
+  const styles={display:show? "block":"none"}
+  return (
+    <div className="movie-container">
+      <img className="movie-poster" src={poster} alt={name} />
+      <div className="movie-specs">
+        <h3 className="movie-name">{name}</h3>
+        <p className="movie-rating">⭐{rating}</p>
+      </div>
+      <button onClick={()=>setShow(!show)} className="movie-show-button">{show ? "Hide" : "Show"} Description</button>
+      <p style={styles}>{summary}</p>
+      <Counter />
     </div>
   );
 }

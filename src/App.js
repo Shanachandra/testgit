@@ -6,11 +6,24 @@ import { ColorList } from './ColorList';
 import { MovieList } from './MovieList';
 import { Movie } from './Movie';
 import { AddMovie } from './AddMovie';
+import { EditMovie } from './EditMovie';
 import { useParams } from 'react-router';
 import { BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import IconButton from '@mui/material/IconButton';
 import { useHistory } from 'react-router';
+import AppBar from '@mui/material/AppBar';
+import Button from '@mui/material/Button';
+import Toolbar from '@mui/material/Toolbar';
+import Box from '@mui/material/Box';
+import { ThemeProvider, useTheme, createTheme } from '@mui/material/styles'
+import Paper from '@mui/material/Paper';
+import HomeIcon from '@mui/icons-material/Home';
+import TheatersIcon from '@mui/icons-material/Theaters';
+import AddIcon from '@mui/icons-material/Add';
+import PaletteIcon from '@mui/icons-material/Palette';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh';
 
 
 function App() {
@@ -124,9 +137,72 @@ function Welcome()
   )
 }
 function BasicExample({movies,setMovies}) {
+  const [mode,setMode]=useState("light");
+  const history=useHistory();
+  const theme = createTheme({
+    palette: {
+      mode: mode,
+    },
+  });
   return (
-    <div>
-      <ul>
+    <ThemeProvider theme={theme}>
+<Paper style={{minHeight:"100vh"}} elevation={3}>
+    <div className="App">
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static">
+      
+        <Toolbar>
+        <Button startIcon={<HomeIcon />} onClick={()=>history.push("/")} color="inherit">Home</Button>
+        <Button startIcon={<TheatersIcon />} onClick={()=>history.push("/movies")}color="inherit">Movies</Button>
+        <Button startIcon={<AddIcon />} onClick={()=>history.push("/movies/add")} color="inherit">AddMovies</Button>
+        <Button startIcon={<PaletteIcon />}  onClick={()=>history.push("/colorbox")} color="inherit">ColorGame</Button>
+        <Button startIcon={mode==="light"?<Brightness4Icon />:<BrightnessHighIcon />} onClick={()=>setMode(mode==="light"?"dark":"light")} style={{marginLeft:"auto"}} color="inherit">{mode==="light"?"dark":"light"} Mode</Button>
+
+        </Toolbar>
+        </AppBar>
+        </Box>
+        <Switch>
+        {/* Each route is case, eg. - case '/about': */}
+        <Route exact path="/">
+          <Welcome />
+         </Route>
+
+        <Route path="/films">
+          <Redirect to="/movies" />
+          {/* Matcht url display the below component */}          
+          </Route>
+
+          <Route path="/movies/add">
+          <AddMovie movies={movies} setMovies={setMovies} />
+          </Route>
+
+          <Route path="/movies/edit/:id">
+          <EditMovie movies={movies} setMovies={setMovies} />
+          </Route>
+
+          <Route path="/movies/:id">
+          <MovieDetail movies={movies} />
+          </Route>         
+
+          {/* <Route exact path="/movies/:id/:name/:poster/:rating/:summary/:trailer">
+          <EditMovie movies={movies} />
+          </Route> */}
+
+          <Route path="/movies">
+          {/* Matcht url display the below component */}
+          <MovieList movies={movies} setMovies={setMovies} />          
+        </Route>
+
+        <Route path="/colorbox">
+          <ColorList />
+        </Route>
+        
+        <Route path="**">
+        <NotFound />
+        </Route>
+      </Switch>
+      
+      {/* <ul>
       
         <li>
           <Link to="/">Home</Link>
@@ -140,12 +216,11 @@ function BasicExample({movies,setMovies}) {
         <li>
           <Link to="/colorbox">Color Box</Link>
         </li>
-        {/* <li>
-            <a href="/about" >Go to about</a>
-          </li> */}
-      </ul>
+       
+      </ul> */}
+      
 
-      <hr />
+      
 
       {/*
           A <Switch> looks through all its children <Route>
@@ -154,62 +229,31 @@ function BasicExample({movies,setMovies}) {
           you have multiple routes, but you want only one
           of them to render at a time
         */}
-      <Switch>
-        {/* Each route is case, eg. - case '/about': */}
-        <Route exact path="/">
-          <Welcome />
-          <MovieDetail />
-        </Route>
-
-        <Route path="/films">
-          <Redirect to="/movies" />
-          {/* Matcht url display the below component */}          
-          </Route>
-
-          <Route path="/movies/add">
-          <AddMovie movies={movies} setMovies={setMovies} />
-          </Route>
-
-          <Route path="/movies/:id">
-          <MovieDetail movies={movies} />
-          </Route>
-
-          <Route path="/movies">
-          {/* Matcht url display the below component */}
-          <MovieList movies={movies} />          
-        </Route>
-
-        <Route path="/colorbox">
-          <ColorList />
-        </Route>
-        
-        <Route path="**">
-        <NotFound />
-        </Route>
-      </Switch>
+     
     </div>
+    </Paper>
+    </ThemeProvider>
   );
 }
 function MovieDetail({movies})
 {
   const {id}=useParams()
-  console.log(movies,id)
-  const movie=movies[id]
-  console.log(movie)
+  
+  const mov=movies[id]
   const history=useHistory();
   return(
     <div>
-       <IconButton onClick={()=>history.push("/movies")} color="primary" aria-label="Movie details">
+       <IconButton onClick={()=>history.goBack()} color="primary" aria-label="Movie details">
               <ArrowBackIcon /> Back 
             </IconButton>
-       <iframe width="100%" height="506" src={movie.trailer} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+       <iframe width="100%" height="506" src={mov.trailer} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
        <div  className="movie-detail-container">
        <div className="movie-specs">
-          <h3 className="movie-name">{movie.movieName}</h3>
+          <h3 className="movie-name">{mov.movieName}</h3>
            
-          <p className="movie-rating">⭐{movie.imdb}</p>
+          <p className="movie-rating">⭐{mov.imdb}</p>
         </div>
-        <p>{movie.movieSummary}</p>
+        <p>{mov.movieSummary}</p>
        </div>
     </div>
   )
@@ -247,5 +291,6 @@ function Dashboard() {
     </div>
   );
 }
+
 
 export default App;

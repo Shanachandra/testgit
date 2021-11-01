@@ -8,11 +8,17 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Counter } from "./Counter";
 import InfoIcon from '@mui/icons-material/Info';
 import { useHistory } from 'react-router';
+import Button from '@mui/material/Button';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import EditIcon from '@mui/icons-material/Edit';
 
-export function Movie({ name, poster, rating, summary, id}) {
+export function Movie({ name, poster, rating, summary, trailer, id, movies, setMovies}) {
   const [show, setShow] = useState(true);
   const history=useHistory();
-
+const removeitem=(moveis,id)=>{  
+ let newarray=moveis.splice(id,1) 
+ return moveis
+}
   const styles = { display: show ? "block" : "none" };
   return (
     <Card className="movie-container">
@@ -36,8 +42,27 @@ export function Movie({ name, poster, rating, summary, id}) {
       </CardContent>
       <CardActions>
         <Counter />
+        <IconButton className="movie-edit-button" color="secondary" aria-label="Editicon" style={{marginLeft:"auto"}}
+         onClick={()=>history.push("/movies/edit/"+id)}><EditIcon /> </IconButton>
+        <IconButton className="movie-delete-button" color="error" aria-label="deleteicon" onClick={()=>{
+                const remainingmovies= movies.filter((mv,index)=>index!=id)
+                setMovies(remainingmovies)
+        }}><DeleteOutlineIcon /> </IconButton>
+       
       </CardActions>
 
     </Card>
   );
 }
+
+
+
+// const removeitem=(moveis,id)=>{  
+//   let newarray=moveis.splice(id,1) 
+//   return moveis
+//  }
+//  onClick={()=>setMovies(removeitem(movies,id))}
+ 
+
+
+

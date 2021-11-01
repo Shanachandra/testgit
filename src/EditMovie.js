@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import { useParams } from 'react-router';
+import { useHistory } from 'react-router';
 
 // function Msg({ name, img, summary, imdb }) {
 //   return (
@@ -13,12 +15,14 @@ import TextField from '@mui/material/TextField';
 //     </div>
 //   );
 // }
-export function AddMovie({ movies, setMovies }) {
-  const [movieName, setName] = useState('');
-  const [moviePic, setPoster] = useState('');
-  const [imdb, setRating] = useState('');
-  const [movieSummary, setSummary] = useState('');
-  const [trailer, setTrailer] = useState('');
+export function EditMovie({ movies, setMovies }) {
+    const { id }= useParams();
+    const history=useHistory();
+  const [movieName, setName] = useState(movies[id].movieName);
+  const [moviePic, setPoster] = useState(movies[id].moviePic);
+  const [imdb, setRating] = useState(movies[id].imdb);
+  const [movieSummary, setSummary] = useState(movies[id].movieSummary);
+  const [trailer, setTrailer] = useState(movies[id].trailer);
   const resetMovieForm = () => {
     setName('');
     setPoster('');
@@ -26,10 +30,13 @@ export function AddMovie({ movies, setMovies }) {
     setSummary('');
     setTrailer('');
   };
-  const addMovie = () => {
-    const newmovie = { movieName, moviePic, imdb, movieSummary };
-    setMovies([...movies, newmovie]);
-    resetMovieForm();
+  const editMovie = () => {
+    const updatedmovie = { movieName, moviePic, imdb, movieSummary,trailer };
+    const copyMovies=[...movies];
+    copyMovies[id]=updatedmovie;
+    
+    setMovies(copyMovies);
+    history.push("/movies")
   };
   return (<div className="add-movie-form">
     <TextField value={movieName} onChange={event => setName(event.target.value)} label="Name" variant="outlined" />
@@ -38,7 +45,7 @@ export function AddMovie({ movies, setMovies }) {
     <TextField value={movieSummary} onChange={event => setSummary(event.target.value)} label="Summary" variant="outlined" />
     <TextField value={trailer} onChange={event => setTrailer(event.target.value)} label="Trailer" variant="outlined" />
 
-    <Button onClick={addMovie} variant="contained">Add Movie</Button>
+    <Button onClick={editMovie} variant="contained" color="success">Save</Button>
 
   </div>);
 }

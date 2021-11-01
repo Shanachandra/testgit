@@ -2,14 +2,14 @@
 import { Movie } from "./Movie";
 
 
-export function MovieList({movies}) {
+export function MovieList({movies,setMovies}) {
  
  
   return (
     <section>
    
 
-      <div className="movie-list">
+      {/* <div className="movie-list">
 
         {movies.map((mv, index) => (
           <Movie
@@ -18,9 +18,26 @@ export function MovieList({movies}) {
             poster={mv.moviePic}
             rating={mv.imdb}
             summary={mv.movieSummary}
-            id={index} />
+            id={index}
+            movies={movies}
+            setMovies={setMovies} />
         ))}
-      </div>
+      </div> */}
+       <div className="movie-list">
+
+{movies.map((mv, index) => (
+  <Movie
+    key={index}
+    name={mv.movieName} 
+    poster={mv.moviePic}
+    rating={mv.imdb}
+    summary={mv.movieSummary}
+    id={index}
+    movies={movies}
+    
+    setMovies={setMovies} />
+))}
+</div>
     </section>
   );
 }
